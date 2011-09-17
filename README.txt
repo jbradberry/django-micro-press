@@ -3,7 +3,7 @@ django-micro-press
 ==================
 
 django-micro-press is a pluggable app, intended to be embedded as a
-simple newspaper in a game.
+simple newspaper in a game or other resource on a website.
 
 Requirements
 ------------
