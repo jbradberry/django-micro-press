@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.contenttypes import generic
+from template_utils.markup import formatter
 
 
 class Section(models.Model):
@@ -29,7 +31,7 @@ class Article(models.Model):
 
     body = models.TextField()
     body_html = models.TextField()
-    # markup_type = models.
+    markup_type = models.CharField(max_length=32)
 
     class Meta:
         get_latest_by = "published"
@@ -37,3 +39,9 @@ class Article(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.body_html = formatter(
+            self.body, filter_name=self.markup_type,
+            **settings.MARKUP_FILTER_OPTS.get(self.markup_type, {}))
+        super(Article, self).save(*args, **kwargs)
