@@ -3,7 +3,7 @@ import models
 
 
 def _limit_articles(realm_object_id=None, realm_slug=None,
-                    realm_slug_field='slug', **kwargs):
+                    realm_slug_field='realm__slug', **kwargs):
     queryset = models.Article.objects.all()
     if realm_object_id:
         queryset = queryset.filter(realm__pk=realm_object_id)
