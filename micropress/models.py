@@ -34,8 +34,8 @@ class Article(models.Model):
     markup_type = models.CharField(max_length=32)
 
     class Meta:
-        get_latest_by = "published"
-        ordering = ("-published", "title")
+        get_latest_by = "created"
+        ordering = ("-created", "title")
 
     def __unicode__(self):
         return self.title
