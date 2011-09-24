@@ -1,0 +1,23 @@
+{% extends "micropress/base.html" %}
+
+{% block title %}Articles | {{ block.super }}{% endblock %}
+
+{% block content %}
+
+  {% if issue != None %}
+  <h2>{{ issue.subname }}</h2>
+  {% endif %}
+
+  {% if is_paginated %}
+  {% include "micropress/list_paging.html" %}
+  {% endif %}
+
+  {% for article in article_list %}
+    {% include "micropress/article_card.html" %}
+  {% endfor %}
+
+  {% if is_paginated %}
+  {% include "micropress/list_paging.html" %}
+  {% endif %}
+
+{% endblock %}

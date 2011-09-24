@@ -1,0 +1,10 @@
+<div class="article">
+  <a name="{{ article.slug }}">
+  <span class="section">{{ article.section }}</span>
+  <h3 class="title">{{ article.title }}</h3>
+  <span class="date">{{ article.created }}</span> -
+  <span class="byline">{{ article.byline }}</span>
+  <div class="body">
+    {{ article.body_html|safe }}
+  </div>
+</div>

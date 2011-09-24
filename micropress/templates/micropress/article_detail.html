@@ -1,0 +1,9 @@
+{% extends "micropress/base.html" %}
+
+{% block title %}{{ article.title }} | {{ block.super }}{% endblock %}
+
+{% block page_title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+  {% include "micropress/article_card.html" %}
+{% endblock %}
