@@ -5,6 +5,7 @@ from template_utils.markup import formatter
 
 
 FORMATTERS = tuple((f, f) for f in formatter._filters.iterkeys())
+MARKUP_FILTER_OPTS = getattr(settings, 'MARKUP_FILTER_OPTS', {})
 
 
 class Section(models.Model):
@@ -46,5 +47,5 @@ class Article(models.Model):
     def save(self, *args, **kwargs):
         self.body_html = formatter(
             self.body, filter_name=self.markup_type,
-            **settings.MARKUP_FILTER_OPTS.get(self.markup_type, {}))
+            **MARKUP_FILTER_OPTS.get(self.markup_type, {}))
         super(Article, self).save(*args, **kwargs)
