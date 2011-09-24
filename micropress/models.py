@@ -4,6 +4,9 @@ from django.contrib.contenttypes import generic
 from template_utils.markup import formatter
 
 
+FORMATTERS = tuple((f, f) for f in formatter._filters.iterkeys())
+
+
 class Section(models.Model):
     name = models.CharField(max_length=32)
 
@@ -31,7 +34,7 @@ class Article(models.Model):
 
     body = models.TextField()
     body_html = models.TextField()
-    markup_type = models.CharField(max_length=32)
+    markup_type = models.CharField(max_length=32, choices=FORMATTERS)
 
     class Meta:
         get_latest_by = "created"
