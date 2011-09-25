@@ -15,6 +15,9 @@ class Press(models.Model):
     object_id = models.PositiveIntegerField()
     realm = generic.GenericForeignKey()
 
+    class Meta:
+        verbose_name_plural = "presses"
+
     def __unicode__(self):
         return self.name
 
@@ -39,9 +42,6 @@ class Issue(models.Model):
 
 class Section(models.Model):
     name = models.CharField(max_length=32)
-
-    class Meta:
-        ordering = ("name",)
 
     def __unicode__(self):
         return self.name
