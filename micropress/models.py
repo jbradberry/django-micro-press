@@ -53,7 +53,7 @@ class Article(models.Model):
 
     author = models.ForeignKey("auth.User")
     title = models.CharField(max_length=128)
-    slug = models.SlugField(max_length=128, unique=True)
+    slug = models.SlugField(max_length=128)
     byline = models.CharField(max_length=128)
     section = models.ForeignKey(Section)
 
