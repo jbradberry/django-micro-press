@@ -2,10 +2,12 @@ from django.conf import settings
 from django.db import models
 from django.contrib.contenttypes import generic
 from template_utils.markup import formatter
+from lxml.html.clean import clean_html
 
 
 FORMATTERS = tuple((f, f) for f in formatter._filters.iterkeys())
 MARKUP_FILTER_OPTS = getattr(settings, 'MARKUP_FILTER_OPTS', {})
+LXML_CLEAN_OPTS = getattr(settings, 'LXML_CLEAN_OPTS', {})
 
 
 class Press(models.Model):
@@ -73,7 +75,8 @@ class Article(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.body_html = formatter(
+        html = formatter(
             self.body, filter_name=self.markup_type,
             **MARKUP_FILTER_OPTS.get(self.markup_type, {}))
+        self.body_html = clean_html(html, **LXML_CLEAN_OPTS)
         super(Article, self).save(*args, **kwargs)
