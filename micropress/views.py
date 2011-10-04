@@ -1,6 +1,6 @@
-from django.contrib.contenttypes.models import ContentType
 from django.views.generic.list_detail import object_list, object_detail
 from django.shortcuts import get_object_or_404
+from django.db.models import get_model
 from django.conf import settings
 from functools import wraps
 import models
@@ -14,23 +14,24 @@ def limit_articles(f):
         if realm_content_type is None:
             realm_content_type = settings.DEFAULT_REALM_TYPE
         app_label, model = realm_content_type.split('.')
-
-        if realm_slug and realm_slug_field:
-            realm_model = ContentType.objects.get(app_label=app_label,
-                                                  model=model.lower())
-            realm_object_id = realm_model.get_object_for_this_type(**
-                {realm_slug_field: realm_slug}).id
-        elif realm_object_id is None:
+        realm_model = get_model(app_label, model)
+        if realm_object_id is not None:
+            opts = {'pk': realm_object_id}
+        elif realm_slug and realm_slug_field:
+            opts = {realm_slug_field: realm_slug}
+        else:
             raise AttributeError(
                 "View must be called with either a realm_object_id or"
                 " a realm_slug/realm_slug_field.")
-        press = get_object_or_404(models.Press, object_id=realm_object_id,
+
+        realm = get_object_or_404(realm_model, **opts)
+        press = get_object_or_404(models.Press, object_id=realm.id,
                                   content_type__app_label=app_label,
                                   content_type__model=model.lower())
         qs = press.article_set.all()
         if extra_context is None:
             extra_context = {}
-        extra_context['press'] = press
+        extra_context.update(press=press, realm=realm)
         return f(request, *args, queryset=qs,
                  extra_context=extra_context, **kwargs)
     return func
