@@ -38,8 +38,11 @@ def limit_articles(f):
 
 
 @limit_articles
-def article_list(request, issue=None, queryset=None, extra_context=None,
-                 template_object_name='article', **kwargs):
+def article_list(request, issue=None, page=None, queryset=None,
+                 extra_context=None, template_object_name='article', **kwargs):
+    if issue is None:
+        issue = request.GET.get('issue', None)
+
     if issue is not None:
         issue = int(issue)
         queryset = queryset.filter(issue=issue)
@@ -47,7 +50,8 @@ def article_list(request, issue=None, queryset=None, extra_context=None,
         extra_context['issue'] = get_object_or_404(press.issue_set,
                                                    number=issue)
     return object_list(request, queryset, extra_context=extra_context,
-                       template_object_name=template_object_name, **kwargs)
+                       template_object_name=template_object_name,
+                       page=page, **kwargs)
 
 
 @limit_articles
