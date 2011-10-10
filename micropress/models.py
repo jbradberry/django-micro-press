@@ -1,13 +1,7 @@
-from django.conf import settings
 from django.db import models
+from django.conf import settings
 from django.contrib.contenttypes import generic
-from template_utils.markup import formatter
-from lxml.html.clean import clean_html
-
-
-FORMATTERS = tuple((f, f) for f in formatter._filters.iterkeys())
-MARKUP_FILTER_OPTS = getattr(settings, 'MARKUP_FILTER_OPTS', {})
-LXML_CLEAN_OPTS = getattr(settings, 'LXML_CLEAN_OPTS', {})
+from micropress import markup
 
 
 class Press(models.Model):
@@ -64,7 +58,7 @@ class Article(models.Model):
 
     body = models.TextField()
     body_html = models.TextField()
-    markup_type = models.CharField(max_length=32, choices=FORMATTERS)
+    markup_type = models.CharField(max_length=32, choices=markup.FORMATTERS)
 
     class Meta:
         get_latest_by = "created"
@@ -75,8 +69,5 @@ class Article(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        html = formatter(
-            self.body, filter_name=self.markup_type,
-            **MARKUP_FILTER_OPTS.get(self.markup_type, {}))
-        self.body_html = clean_html(html, **LXML_CLEAN_OPTS)
+        self.body_html = markup.process(self.body, self.markup_type)
         super(Article, self).save(*args, **kwargs)
