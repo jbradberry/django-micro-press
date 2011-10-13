@@ -67,7 +67,7 @@ def article_list(request, issue=None, page=None, queryset=None,
                     ('realm_object_id', 'realm_slug')
                     if kwargs.get(param, None) is not None)
                 return HttpResponseRedirect(
-                    reverse('press_article_list', current_app=app,
+                    reverse('micropress:press_article_list', current_app=app,
                             kwargs=opts))
             extra_context['form'] = form
     return object_list(request, queryset, extra_context=extra_context,
