@@ -12,6 +12,13 @@
   {% include "micropress/list_paging.html" %}
   {% endif %}
 
+  {% if form %}
+  <form method="post" action="">{% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Submit" />
+  </form>
+  {% endif %}
+
   {% for article in article_list %}
     {% include "micropress/article_card.html" %}
   {% endfor %}

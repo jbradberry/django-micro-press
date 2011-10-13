@@ -6,6 +6,7 @@ from micropress import markup
 
 class Press(models.Model):
     name = models.CharField(max_length=128)
+    closed = models.BooleanField(default=False)
 
     content_type = models.ForeignKey("contenttypes.ContentType")
     object_id = models.PositiveIntegerField()
@@ -20,7 +21,7 @@ class Press(models.Model):
     @property
     def current_issue(self):
         if self.issue_set.exists():
-            return self.issue_set.reverse()[0]
+            return self.issue_set.reverse()[0].number
 
 
 class Issue(models.Model):
@@ -58,7 +59,8 @@ class Article(models.Model):
 
     body = models.TextField()
     body_html = models.TextField()
-    markup_type = models.CharField(max_length=32, choices=markup.FORMATTERS)
+    markup_type = models.CharField(max_length=32, choices=markup.FORMATTERS,
+                                   default=markup.DEFAULT_MARKUP)
 
     class Meta:
         get_latest_by = "created"
