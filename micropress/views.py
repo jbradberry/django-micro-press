@@ -57,7 +57,7 @@ def article_list(request, issue=None, page=None, queryset=None,
     else:
         if not press.closed and request.user.is_authenticated():
             a = models.Article(press=press, issue=press.current_issue,
-                               author=request.user)
+                               author=request.user, byline="Anonymous")
             form = ArticleForm(request.POST or None, instance=a)
             if form.is_valid():
                 form.save()
