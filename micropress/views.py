@@ -75,5 +75,8 @@ def article_list(request, issue=None, page=None, queryset=None,
 
 
 @limit_articles
-def article_detail(request, template_object_name='article', **kwargs):
-    return object_detail(request, template_object_name=template_object_name)
+def article_detail(request, realm_content_type=None, realm_object_id=None,
+                   realm_slug=None, realm_slug_field='slug',
+                   template_object_name='article', **kwargs):
+    return object_detail(request, template_object_name=template_object_name,
+                         **kwargs)
