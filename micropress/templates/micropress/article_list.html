@@ -1,4 +1,5 @@
 {% extends "micropress/base.html" %}
+{% load article_tags %}
 
 {% block title %}Articles | {{ block.super }}{% endblock %}
 
@@ -20,7 +21,7 @@
   {% endif %}
 
   {% for article in article_list %}
-    {% include "micropress/article_card.html" %}
+    {% article_content %}
   {% endfor %}
 
   {% if is_paginated %}
