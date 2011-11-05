@@ -11,19 +11,6 @@ class ArticleForm(forms.ModelForm):
 
 
 class CreatePressForm(forms.ModelForm):
-    create = forms.BooleanField(initial=True, required=False)
-
     class Meta:
         model = Press
         exclude = ('content_type', 'object_id', 'realm')
-
-    def full_clean(self):
-        if self.data.get('create', False):
-            super(CreatePressForm, self).full_clean()
-        else:
-            self.cleaned_data = {}
-            self._errors = forms.util.ErrorDict()
-
-    def save(self, *args, **kwargs):
-        if self.cleaned_data:
-            return super(CreatePressForm, self).save(*args, **kwargs)
