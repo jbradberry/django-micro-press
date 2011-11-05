@@ -13,6 +13,10 @@
   {% include "micropress/list_paging.html" %}
   {% endif %}
 
+  <div class="headline_box">
+  {% most_recent %}
+  </div>
+
   {% if form %}
   <form method="post" action="">{% csrf_token %}
   {{ form.as_p }}

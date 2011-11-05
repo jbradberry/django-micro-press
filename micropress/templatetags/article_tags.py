@@ -9,6 +9,16 @@ def article_content(parser, token):
     return ArticleNode()
 
 
+@register.inclusion_tag("micropress/headline_list.html", takes_context=True)
+def most_recent(context, issue=None, number=None):
+    articles = context['press'].article_set.all()
+    if issue is not None:
+        articles = articles.filter(issue=issue)
+    if number is not None:
+        articles = articles[:int(number)]
+    return {'headlines': articles}
+
+
 class ArticleNode(template.Node):
     def render(self, context):
         realm = context['realm']

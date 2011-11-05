@@ -1,0 +1,5 @@
+<ul class="headline_list">
+  {% for headline in headlines %}
+    <li class="headline"><a href="{{ headline.get_absolute_url }}">{{ headline.title }}</a></li>
+  {% endfor %}
+</ul>
