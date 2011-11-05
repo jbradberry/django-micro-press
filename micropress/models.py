@@ -1,7 +1,28 @@
 from django.db import models
 from django.conf import settings
+from django.utils.decorators import wraps
 from django.contrib.contenttypes import generic
 from micropress import markup
+
+
+def permalink(func):
+    """
+    Decorator that calls urlresolvers.reverse() to return a URL using
+    parameters returned by the decorated function "func".
+
+    "func" should be a function that returns a tuple in one of the
+    following formats:
+        (viewname, viewargs)
+        (viewname, viewargs, viewkwargs)
+        (viewname, viewargs, viewkwargs, current_app)
+    """
+    from django.core.urlresolvers import reverse
+    @wraps(func)
+    def inner(*args, **kwargs):
+        bits = func(*args, **kwargs)
+        return reverse(bits[0], None, *bits[1:3],
+                       current_app=bits[3] if bits[3:] else None)
+    return inner
 
 
 class Press(models.Model):
@@ -73,3 +94,10 @@ class Article(models.Model):
     def save(self, *args, **kwargs):
         self.body_html = markup.process(self.body, self.markup_type)
         super(Article, self).save(*args, **kwargs)
+
+    @permalink
+    def get_absolute_url(self):
+        return ('micropress:article_detail', (),
+                {'realm_slug': self.press.realm.slug,
+                 'slug': self.slug},
+                self.press.content_type.app_label)
