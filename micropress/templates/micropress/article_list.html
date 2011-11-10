@@ -15,7 +15,11 @@
   {% endif %}
 
   <div class="headline_box">
+  {% if issue %}
   {% most_recent issue.number %}
+  {% else %}
+  {% most_recent %}
+  {% endif %}
   </div>
 
   {% if form %}
