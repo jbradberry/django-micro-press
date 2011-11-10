@@ -5,8 +5,9 @@
 
 {% block content %}
 
-  {% if issue != None %}
+  {% if issue %}
   <h2>{{ issue.subname }}</h2>
+  {% include "micropress/issue_paging.html" %}
   {% endif %}
 
   {% if is_paginated %}
@@ -14,7 +15,7 @@
   {% endif %}
 
   <div class="headline_box">
-  {% most_recent %}
+  {% most_recent issue.number %}
   </div>
 
   {% if form %}
@@ -30,6 +31,10 @@
 
   {% if is_paginated %}
   {% include "micropress/list_paging.html" %}
+  {% endif %}
+
+  {% if issue %}
+  {% include "micropress/issue_paging.html" %}
   {% endif %}
 
 {% endblock %}

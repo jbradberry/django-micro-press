@@ -1,0 +1,13 @@
+<div class="issue-paging">
+<div class="issue-prev">
+{% if issue.prev %}
+  <a href="{{ issue.prev.get_absolute_url }}">Issue {{issue.prev.number}}</a>
+{% endif %}
+</div>
+
+<div class="issue-next">
+{% if issue.next %}
+  <a href="{{ issue.next.get_absolute_url }}">Issue {{issue.next.number}}</a>
+{% endif %}
+</div>
+</div>

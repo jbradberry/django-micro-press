@@ -35,48 +35,40 @@ def limit_articles(f):
         if extra_context is None:
             extra_context = {}
         extra_context.update(press=press, realm=realm)
-        return f(request, *args, queryset=qs, extra_context=extra_context,
-                 realm_object_id=realm_object_id, realm_slug=realm_slug,
-                 realm_content_type=realm_content_type, **kwargs)
+        return f(request, queryset=qs, extra_context=extra_context, **kwargs)
     return func
 
 
 @limit_articles
-def article_list(request, issue=None, page=None, queryset=None,
-                 extra_context=None, template_object_name='article', **kwargs):
+def article_list(request, queryset=None, extra_context=None, issue=None,
+                 template_object_name='article', **kwargs):
+    issue_pagination = kwargs.pop('issue_paginate_by', None)
     press = extra_context['press']
     if issue is None:
-        issue = request.GET.get('issue', None)
+        issue = request.GET.get('issue', press.current_issue)
 
     if issue is not None:
         issue = int(issue)
         queryset = queryset.filter(issue=issue)
         extra_context['issue'] = get_object_or_404(
             press.issue_set,
-            number=issue if issue is not None else press.current_issue)
-    else:
-        if not press.closed and request.user.is_authenticated():
-            a = models.Article(press=press, issue=press.current_issue,
-                               author=request.user, byline="Anonymous")
-            form = ArticleForm(request.POST or None, instance=a)
-            if form.is_valid():
-                form.save()
-                app, model = kwargs['realm_content_type'].split('.')
-                opts = dict(
-                    (param, kwargs[param]) for param in
-                    ('realm_object_id', 'realm_slug')
-                    if kwargs.get(param, None) is not None)
-                return HttpResponseRedirect(
-                    reverse('micropress:press_article_list', current_app=app,
-                            kwargs=opts))
-            extra_context['form'] = form
+            number=issue)
+        kwargs['paginate_by'] = issue_pagination
+
+    if (issue == press.current_issue and not press.closed
+        and request.user.is_authenticated()):
+        a = models.Article(press=press, issue=press.current_issue,
+                           author=request.user, byline="Anonymous")
+        form = ArticleForm(request.POST or None, instance=a)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(request.path)
+        extra_context['form'] = form
     return object_list(request, queryset, extra_context=extra_context,
-                       template_object_name=template_object_name, page=page)
+                       template_object_name=template_object_name, **kwargs)
 
 
 @limit_articles
-def article_detail(request, realm_content_type=None, realm_object_id=None,
-                   realm_slug=None, realm_slug_field='slug',
-                   template_object_name='article', **kwargs):
+def article_detail(request, template_object_name='article', **kwargs):
     return object_detail(request, template_object_name=template_object_name,
                          **kwargs)

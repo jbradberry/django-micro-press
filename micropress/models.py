@@ -4,6 +4,9 @@ from django.utils.decorators import wraps
 from django.contrib.contenttypes import generic
 from micropress import markup
 
+MICROPRESS_REALM_ARGS = getattr(settings, 'MICROPRESS_REALM_ARGS',
+                                {'realm_slug': 'slug'})
+
 
 def permalink(func):
     """
@@ -57,6 +60,24 @@ class Issue(models.Model):
     def __unicode__(self):
         return self.subname
 
+    @permalink
+    def get_absolute_url(self):
+        opts = {'issue': self.number}
+        opts.update((key, getattr(self.press.realm, attr))
+                    for key, attr in MICROPRESS_REALM_ARGS.iteritems())
+        return ('micropress:issue_list', (), opts,
+                self.press.content_type.app_label)
+
+    def prev(self):
+        earlier = self.press.issue_set.filter(number__lt=self.number).reverse()
+        if earlier.exists():
+            return earlier[0]
+
+    def next(self):
+        later = self.press.issue_set.filter(number__gt=self.number)
+        if later.exists():
+            return later[0]
+
 
 class Section(models.Model):
     name = models.CharField(max_length=32)
@@ -97,7 +118,8 @@ class Article(models.Model):
 
     @permalink
     def get_absolute_url(self):
-        return ('micropress:article_detail', (),
-                {'realm_slug': self.press.realm.slug,
-                 'slug': self.slug},
+        opts = {'slug': self.slug}
+        opts.update((key, getattr(self.press.realm, attr))
+                    for key, attr in MICROPRESS_REALM_ARGS.iteritems())
+        return ('micropress:article_detail', (), opts,
                 self.press.content_type.app_label)
