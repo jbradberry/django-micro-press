@@ -6,6 +6,12 @@ register = template.Library()
 
 @register.tag
 def article_content(parser, token):
+    bits = token.split_contents()
+    tagname = bits.pop(0)
+    if len(bits) > 1:
+        raise template.TemplateSyntaxError, "%r tag requires a single argument" % tagname
+    if bits and bits[0] == 'links':
+        return ArticleNode(True)
     return ArticleNode()
 
 
@@ -20,9 +26,13 @@ def most_recent(context, issue=None, number=None):
 
 
 class ArticleNode(template.Node):
+    def __init__(self, links=False):
+        self.links = links
+
     def render(self, context):
         realm = context['realm']
         app_name = realm._meta.app_label
+        context['links'] = self.links
 
         template_list = ["micropress/{0}article_card.html".format(name)
                          for name in ("site_{0}_".format(app_name), "site_",
