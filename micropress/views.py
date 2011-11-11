@@ -63,7 +63,8 @@ def article_list(request, queryset=None, extra_context=None, issue=None,
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(request.path)
-        extra_context['form'] = form
+        extra_context.update(ADMIN_MEDIA_PREFIX=settings.ADMIN_MEDIA_PREFIX,
+                             form=form)
     return object_list(request, queryset, extra_context=extra_context,
                        template_object_name=template_object_name, **kwargs)
 
