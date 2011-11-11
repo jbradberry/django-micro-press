@@ -31,6 +31,8 @@
 
   {% for article in article_list %}
     {% article_content %}
+  {% empty %}
+    <h3>No News Today!</h3>
   {% endfor %}
 
   {% if is_paginated %}
