@@ -23,30 +23,10 @@
   </div>
 
   {% if form %}
-  <script type="text/javascript" src="{{ ADMIN_MEDIA_PREFIX }}js/jquery.min.js"></script>
-  <script type="text/javascript" src="{{ ADMIN_MEDIA_PREFIX }}js/jquery.init.js"></script>
-  <script type="text/javascript" src="{{ ADMIN_MEDIA_PREFIX }}js/urlify.js"></script>
-  <script type="text/javascript" src="{{ ADMIN_MEDIA_PREFIX }}js/prepopulate.min.js"></script>
   <form method="post" action="">{% csrf_token %}
   {{ form.as_p }}
   <input type="submit" value="Submit" />
   </form>
-  <script type="text/javascript">
-(function($) {
-    var field = null;
-
-    field = {
-        id: '#id_slug',
-        dependency_ids: ['#id_title'],
-        dependency_list: ['.title'],
-        maxLength: 128
-    };
-
-    $('.empty-form .slug').addClass('prepopulated_field');
-    $(field.id).data('dependency_list', field['dependency_list'])
-               .prepopulate(field['dependency_ids'], field.maxLength);
-})(django.jQuery);
-  </script>
   {% endif %}
 
   {% for article in article_list %}
