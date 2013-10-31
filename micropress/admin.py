@@ -1,7 +1,8 @@
-from django.contrib import admin
-from django.forms import ModelChoiceField
 from django.contrib.contenttypes.models import ContentType
-from micropress.models import Press, Issue, Section, Article
+from django.forms import ModelChoiceField
+from django.contrib import admin
+
+from . import models
 
 
 class GenericModelChoiceField(ModelChoiceField):
@@ -31,7 +32,7 @@ class ArticleAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
 
 
-admin.site.register(Press, PressAdmin)
-admin.site.register(Issue, IssueAdmin)
-admin.site.register(Section)
-admin.site.register(Article, ArticleAdmin)
+admin.site.register(models.Press, PressAdmin)
+admin.site.register(models.Issue, IssueAdmin)
+admin.site.register(models.Section)
+admin.site.register(models.Article, ArticleAdmin)

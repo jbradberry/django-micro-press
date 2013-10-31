@@ -1,9 +1,19 @@
-from django.conf.urls.defaults import *
+from django.views.generic import RedirectView
+from django.core.urlresolvers import reverse_lazy
+from django.conf.urls import patterns, url
+
+from . import views
 
 
-urlpatterns = patterns('micropress.views',
-    url(r'^$', 'article_list', {'paginate_by': 25}, name='press_article_list'),
-    url(r'^issue/(?P<issue>\d+)/$', 'article_list', name='issue_list'),
-    url(r'^article/(?P<slug>[-\w]+)/$', 'article_detail', name='article_detail'),
-    #(r'^new/$', 'article_create'),
+urlpatterns = patterns('',
+    url(r'^$', RedirectView.as_view(url='issue/current/', permanent=False)),
+    url(r'^article/$', RedirectView.as_view(url='../issue/current/',
+                                            permanent=False)),
+    url(r'^article/(?P<slug>[-\w]+)/$', views.ArticleDetailView.as_view(),
+        name='article_detail'),
+    url(r'^issue/$', views.IssueListView.as_view(),
+        name='issue_list'),
+    url(r'^issue/(?P<issue>[\d\w]+)/$', views.ArticleListView.as_view(),
+        name='article_list'),
+    url(r'^post/$', views.ArticleCreateView.as_view(), name='article_create'),
 )

@@ -1,31 +1,13 @@
-from django.db import models
-from django.conf import settings
-from django.utils.decorators import wraps
 from django.contrib.contenttypes import generic
-from micropress import markup
+from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.db import models
+
+from . import markup
+
 
 MICROPRESS_REALM_ARGS = getattr(settings, 'MICROPRESS_REALM_ARGS',
                                 {'realm_slug': 'slug'})
-
-
-def permalink(func):
-    """
-    Decorator that calls urlresolvers.reverse() to return a URL using
-    parameters returned by the decorated function "func".
-
-    "func" should be a function that returns a tuple in one of the
-    following formats:
-        (viewname, viewargs)
-        (viewname, viewargs, viewkwargs)
-        (viewname, viewargs, viewkwargs, current_app)
-    """
-    from django.core.urlresolvers import reverse
-    @wraps(func)
-    def inner(*args, **kwargs):
-        bits = func(*args, **kwargs)
-        return reverse(bits[0], None, *bits[1:3],
-                       current_app=bits[3] if bits[3:] else None)
-    return inner
 
 
 class Press(models.Model):
@@ -45,7 +27,7 @@ class Press(models.Model):
     @property
     def current_issue(self):
         if self.issue_set.exists():
-            return self.issue_set.reverse()[0].number
+            return self.issue_set.reverse()[0]
 
 
 class Issue(models.Model):
@@ -60,13 +42,12 @@ class Issue(models.Model):
     def __unicode__(self):
         return self.subname
 
-    @permalink
     def get_absolute_url(self):
         opts = {'issue': self.number}
         opts.update((key, getattr(self.press.realm, attr))
                     for key, attr in MICROPRESS_REALM_ARGS.iteritems())
-        return ('micropress:issue_list', (), opts,
-                self.press.content_type.app_label)
+        return reverse('micropress:article_list', kwargs=opts,
+                       current_app=self.press.content_type.app_label)
 
     def prev(self):
         earlier = self.press.issue_set.filter(number__lt=self.number).reverse()
@@ -116,10 +97,9 @@ class Article(models.Model):
         self.body_html = markup.process(self.body, self.markup_type)
         super(Article, self).save(*args, **kwargs)
 
-    @permalink
     def get_absolute_url(self):
         opts = {'slug': self.slug}
         opts.update((key, getattr(self.press.realm, attr))
                     for key, attr in MICROPRESS_REALM_ARGS.iteritems())
-        return ('micropress:article_detail', (), opts,
-                self.press.content_type.app_label)
+        return reverse('micropress:article_detail', kwargs=opts,
+                       current_app=self.press.content_type.app_label)

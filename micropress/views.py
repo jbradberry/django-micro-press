@@ -1,75 +1,121 @@
-from django.views.generic.list_detail import object_list, object_detail
-from django.shortcuts import get_object_or_404
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-from django.db.models import get_model
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic import ListView, DetailView, CreateView
+from django.http import Http404
 from django.conf import settings
-from functools import wraps
-import models
-from micropress.forms import ArticleForm
+
+from . import models
+from . import forms
 
 
-def limit_articles(f):
-    @wraps(f)
-    def func(request, realm_content_type=None, realm_object_id=None,
-             realm_slug=None, realm_slug_field='slug', extra_context=None,
-             *args, **kwargs):
+class PressMixin(object):
+    model = models.Article
+
+    realm_slug_field = 'slug'
+
+    slug_realm_kwarg = 'realm_slug'
+    pk_realm_kwarg = 'realm_pk'
+
+    issue = None
+
+    def get_realm(self):
+        realm = None
+
+        realm_content_type = self.kwargs.get('realm_content_type')
         if realm_content_type is None:
             realm_content_type = settings.DEFAULT_REALM_TYPE
+
         app_label, model = realm_content_type.split('.')
-        realm_model = get_model(app_label, model)
-        if realm_object_id is not None:
-            opts = {'pk': realm_object_id}
-        elif realm_slug and realm_slug_field:
-            opts = {realm_slug_field: realm_slug}
+        model = model.lower()
+        self.realm_type = ContentType.objects.get(app_label=app_label, model=model)
+
+        realm_pk = self.kwargs.get(self.pk_realm_kwarg)
+        realm_slug = self.kwargs.get(self.slug_realm_kwarg)
+
+        if realm_pk is not None:
+            opts = {'pk': realm_pk}
+        elif realm_slug is not None:
+            opts = {self.realm_slug_field: realm_slug}
         else:
-            raise AttributeError(
-                "View must be called with either a realm_object_id or"
-                " a realm_slug/realm_slug_field.")
+            opts = None
 
-        realm = get_object_or_404(realm_model, **opts)
-        press = get_object_or_404(models.Press, object_id=realm.id,
-                                  content_type__app_label=app_label,
-                                  content_type__model=model.lower())
-        qs = press.article_set.all()
-        if extra_context is None:
-            extra_context = {}
-        extra_context.update(press=press, realm=realm)
-        return f(request, queryset=qs, extra_context=extra_context, **kwargs)
-    return func
+        if opts:
+            try:
+                realm = self.realm_type.get_object_for_this_type(**opts)
+            except ObjectDoesNotExist:
+                raise Http404("No %s found matching this query."
+                              % realm_type.__class__.__name__)
 
+        return realm
 
-@limit_articles
-def article_list(request, queryset=None, extra_context=None, issue=None,
-                 template_object_name='article', **kwargs):
-    issue_pagination = kwargs.pop('issue_paginate_by', None)
-    press = extra_context['press']
-    if issue is None:
-        issue = request.GET.get('issue', press.current_issue)
+    def get_press(self):
+        press = None
 
-    if issue is not None:
-        issue = int(issue)
-        queryset = queryset.filter(issue=issue)
-        extra_context['issue'] = get_object_or_404(
-            press.issue_set,
-            number=issue)
-        kwargs['paginate_by'] = issue_pagination
+        if self.realm:
+            try:
+                press = models.Press.objects.get(
+                    content_type=self.realm_type, object_id=self.realm.id)
+            except ObjectDoesNotExist:
+                raise Http404("No Press found matching this query.")
 
-    if (issue == press.current_issue and not press.closed
-        and request.user.is_authenticated()):
-        a = models.Article(press=press, issue=press.current_issue,
-                           author=request.user, byline="Anonymous")
-        form = ArticleForm(request.POST or None, instance=a)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(request.path)
-        extra_context.update(ADMIN_MEDIA_PREFIX=settings.ADMIN_MEDIA_PREFIX,
-                             form=form)
-    return object_list(request, queryset, extra_context=extra_context,
-                       template_object_name=template_object_name, **kwargs)
+        return press
+
+    def get_queryset(self):
+        self.realm = self.get_realm()
+        self.press = self.get_press()
+
+        queryset = super(PressMixin, self).get_queryset()
+
+        if self.press:
+            return queryset.filter(press=self.press)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(PressMixin, self).get_context_data(**kwargs)
+        context['press'] = self.press
+        context['realm'] = self.realm
+
+        return context
 
 
-@limit_articles
-def article_detail(request, template_object_name='article', **kwargs):
-    return object_detail(request, template_object_name=template_object_name,
-                         **kwargs)
+class ArticleListView(PressMixin, ListView):
+    def get_issue(self):
+        issue_num = self.kwargs.get('issue')
+        if issue_num == 'all':
+            return
+
+        if self.press is not None:
+            if issue_num == 'current':
+                return self.press.current_issue
+
+            try:
+                return models.Issue.objects.get(
+                    press=self.press, number=int(issue_num))
+            except (ObjectDoesNotExist, ValueError):
+                raise Http404("No Issue found matching this query.")
+
+    def get_queryset(self):
+        queryset = super(ArticleListView, self).get_queryset()
+
+        self.issue = self.get_issue()
+        if self.issue is not None:
+            return queryset.filter(issue=self.issue.number)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(ArticleListView, self).get_context_data(**kwargs)
+        context['issue'] = self.issue
+
+        return context
+
+
+class ArticleDetailView(PressMixin, DetailView):
+    pass
+
+
+class ArticleCreateView(PressMixin, CreateView):
+    form_class = forms.ArticleForm
+
+
+class IssueListView(PressMixin, ListView):
+    model = models.Issue
