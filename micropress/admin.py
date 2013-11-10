@@ -20,19 +20,14 @@ class PressAdmin(admin.ModelAdmin):
             db_field, request, **kwargs)
 
 
-class IssueAdmin(admin.ModelAdmin):
-    list_display = ('subname', 'press', 'number')
-
-
 class ArticleAdmin(admin.ModelAdmin):
-    fields = ('press', 'issue', 'author', 'title', 'slug', 'byline',
+    fields = ('press', 'author', 'title', 'slug', 'byline',
               'section', 'body', 'markup_type')
-    list_display = ('title', 'author', 'byline', 'section', 'press', 'issue',
+    list_display = ('title', 'author', 'byline', 'section', 'press',
                     'created', 'modified')
     prepopulated_fields = {"slug": ("title",)}
 
 
 admin.site.register(models.Press, PressAdmin)
-admin.site.register(models.Issue, IssueAdmin)
 admin.site.register(models.Section)
 admin.site.register(models.Article, ArticleAdmin)

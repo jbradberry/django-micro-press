@@ -24,41 +24,6 @@ class Press(models.Model):
     def __unicode__(self):
         return self.name
 
-    @property
-    def current_issue(self):
-        if self.issue_set.exists():
-            return self.issue_set.reverse()[0]
-
-
-class Issue(models.Model):
-    subname = models.CharField(max_length=128)
-    number = models.IntegerField(default=0)
-    press = models.ForeignKey(Press)
-
-    class Meta:
-        ordering = ("number",)
-        unique_together = ("press", "number")
-
-    def __unicode__(self):
-        return self.subname
-
-    def get_absolute_url(self):
-        opts = {'issue': self.number}
-        opts.update((key, getattr(self.press.realm, attr))
-                    for key, attr in MICROPRESS_REALM_ARGS.iteritems())
-        return reverse('micropress:article_list', kwargs=opts,
-                       current_app=self.press.content_type.app_label)
-
-    def prev(self):
-        earlier = self.press.issue_set.filter(number__lt=self.number).reverse()
-        if earlier.exists():
-            return earlier[0]
-
-    def next(self):
-        later = self.press.issue_set.filter(number__gt=self.number)
-        if later.exists():
-            return later[0]
-
 
 class Section(models.Model):
     name = models.CharField(max_length=32)
@@ -69,7 +34,6 @@ class Section(models.Model):
 
 class Article(models.Model):
     press = models.ForeignKey(Press)
-    issue = models.IntegerField(null=True)
 
     author = models.ForeignKey("auth.User")
     title = models.CharField(max_length=128)

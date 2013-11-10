@@ -3,28 +3,13 @@
 
 {% block title %}Articles | {{ block.super }}{% endblock %}
 
-{% block header %}
-{{ block.super }}
-{% if issue %}
-<p class="lead">{{ issue.subname }}</p>
-{% endif %}
-{% endblock %}
-
 {% block content %}
-  {% if issue %}
-  {% include "micropress/issue_paging.html" %}
-  {% endif %}
-
   {% if is_paginated %}
   {% include "micropress/list_paging.html" %}
   {% endif %}
 
   <div class="headline_box">
-  {% if issue %}
-  {% most_recent issue.number %}
-  {% else %}
   {% most_recent %}
-  {% endif %}
   </div>
 
   {% if form %}
@@ -42,9 +27,5 @@
 
   {% if is_paginated %}
   {% include "micropress/list_paging.html" %}
-  {% endif %}
-
-  {% if issue %}
-  {% include "micropress/issue_paging.html" %}
   {% endif %}
 {% endblock %}

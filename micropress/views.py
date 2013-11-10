@@ -16,8 +16,6 @@ class PressMixin(object):
     slug_realm_kwarg = 'realm_slug'
     pk_realm_kwarg = 'realm_pk'
 
-    issue = None
-
     def get_realm(self):
         realm = None
 
@@ -79,35 +77,7 @@ class PressMixin(object):
 
 
 class ArticleListView(PressMixin, ListView):
-    def get_issue(self):
-        issue_num = self.kwargs.get('issue')
-        if issue_num == 'all':
-            return
-
-        if self.press is not None:
-            if issue_num == 'current':
-                return self.press.current_issue
-
-            try:
-                return models.Issue.objects.get(
-                    press=self.press, number=int(issue_num))
-            except (ObjectDoesNotExist, ValueError):
-                raise Http404("No Issue found matching this query.")
-
-    def get_queryset(self):
-        queryset = super(ArticleListView, self).get_queryset()
-
-        self.issue = self.get_issue()
-        if self.issue is not None:
-            return queryset.filter(issue=self.issue.number)
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super(ArticleListView, self).get_context_data(**kwargs)
-        context['issue'] = self.issue
-
-        return context
-
+    pass
 
 class ArticleDetailView(PressMixin, DetailView):
     pass
@@ -115,7 +85,3 @@ class ArticleDetailView(PressMixin, DetailView):
 
 class ArticleCreateView(PressMixin, CreateView):
     form_class = forms.ArticleForm
-
-
-class IssueListView(PressMixin, ListView):
-    model = models.Issue
