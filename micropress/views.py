@@ -69,11 +69,10 @@ class PressMixin(object):
         return queryset
 
     def get_context_data(self, **kwargs):
-        context = super(PressMixin, self).get_context_data(**kwargs)
-        context['press'] = self.press
-        context['realm'] = self.realm
-
-        return context
+        context = {'press': self.press,
+                   'realm': self.realm}
+        context.update(kwargs)
+        return super(PressMixin, self).get_context_data(**context)
 
 
 class ArticleListView(PressMixin, ListView):
