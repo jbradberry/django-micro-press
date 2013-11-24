@@ -21,11 +21,17 @@ class PressMixin(object):
 
         realm_content_type = self.kwargs.get('realm_content_type')
         if realm_content_type is None:
-            realm_content_type = settings.DEFAULT_REALM_TYPE
+            realm_content_type = getattr(settings, 'DEFAULT_REALM_TYPE', '')
 
-        app_label, model = realm_content_type.split('.')
-        model = model.lower()
-        self.realm_type = ContentType.objects.get(app_label=app_label, model=model)
+        try:
+            app_label, model = realm_content_type.split('.')
+            model = model.lower()
+            self.realm_type = ContentType.objects.get(app_label=app_label,
+                                                      model=model)
+        except (ObjectDoesNotExist, ValueError) as e:
+            raise ImproperlyConfigured(
+                "{0} is missing a valid realm_content_type.".format(
+                    self.__class__.__name__))
 
         realm_pk = self.kwargs.get(self.pk_realm_kwarg)
         realm_slug = self.kwargs.get(self.slug_realm_kwarg)
@@ -42,7 +48,7 @@ class PressMixin(object):
                 realm = self.realm_type.get_object_for_this_type(**opts)
             except ObjectDoesNotExist:
                 raise Http404("No %s found matching this query."
-                              % realm_type.__class__.__name__)
+                              % self.realm_type.__class__.__name__)
 
         return realm
 
