@@ -82,7 +82,8 @@ class PressMixin(object):
 
 
 class ArticleListView(PressMixin, ListView):
-    pass
+    paginate_by = 10
+
 
 class ArticleDetailView(PressMixin, DetailView):
     pass
