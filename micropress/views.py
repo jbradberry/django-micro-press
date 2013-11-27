@@ -1,6 +1,8 @@
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.http import Http404
 from django.conf import settings
 
@@ -104,3 +106,7 @@ class ArticleCreateView(PressMixin, CreateView):
         self.realm = self.get_realm()
         self.press = self.get_press()
         return super(ArticleCreateView, self).post(request, *args, **kwargs)
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ArticleCreateView, self).dispatch(*args, **kwargs)
