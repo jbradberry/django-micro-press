@@ -15,11 +15,12 @@
   </ul>
   {% endif %}
 
-  {% if form %}
-  <form method="post" action="">{% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Submit" />
-  </form>
+  {% if not press.closed %}
+  <div class="row">
+    <p class="h2">
+      <a href="{% url 'micropress:article_create' realm_slug=realm.slug %}">Stop the presses!</a>
+    </p>
+  </div>
   {% endif %}
 
   {% for article in article_list %}

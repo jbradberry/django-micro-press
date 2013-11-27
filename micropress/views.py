@@ -73,7 +73,8 @@ class PressMixin(object):
 
     def get_context_data(self, **kwargs):
         context = {'press': self.press,
-                   'realm': self.realm}
+                   'realm': self.realm,
+                   'current_app': self.press.content_type.app_label}
         context.update(kwargs)
         return super(PressMixin, self).get_context_data(**context)
 
