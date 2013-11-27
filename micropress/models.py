@@ -1,3 +1,4 @@
+from django.template.defaultfilters import slugify
 from django.contrib.contenttypes import generic
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -59,6 +60,19 @@ class Article(models.Model):
 
     def save(self, *args, **kwargs):
         self.body_html = markup.process(self.body, self.markup_type)
+
+        max_length = self._meta.get_field('slug').max_length
+        slug, num, end = slugify(self.title), 1, ''
+        if len(slug) > max_length:
+            slug = slug[:max_length]
+
+        while self.press.article_set.filter(slug=slug+end).exists():
+            num += 1
+            end = "-{0}".format(num)
+            if len(slug) + len(end) > max_length:
+                slug = slug[:max_length - len(end)]
+
+        self.slug = slug + end
         super(Article, self).save(*args, **kwargs)
 
     def get_absolute_url(self):

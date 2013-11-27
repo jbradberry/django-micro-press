@@ -1,0 +1,13 @@
+{% extends "micropress/base.html" %}
+{% load article_tags %}
+
+{% block title %}Post | {{ block.super }}{% endblock %}
+
+{% block page_title %}Post{% endblock %}
+
+{% block content %}
+  <form method="post" action="">{% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Submit" />
+  </form>
+{% endblock %}

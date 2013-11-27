@@ -65,9 +65,6 @@ class PressMixin(object):
         return press
 
     def get_queryset(self):
-        self.realm = self.get_realm()
-        self.press = self.get_press()
-
         queryset = super(PressMixin, self).get_queryset()
 
         if self.press:
@@ -80,6 +77,11 @@ class PressMixin(object):
         context.update(kwargs)
         return super(PressMixin, self).get_context_data(**context)
 
+    def get(self, request, *args, **kwargs):
+        self.realm = self.get_realm()
+        self.press = self.get_press()
+        return super(PressMixin, self).get(request, *args, **kwargs)
+
 
 class ArticleListView(PressMixin, ListView):
     paginate_by = 10
@@ -91,3 +93,13 @@ class ArticleDetailView(PressMixin, DetailView):
 
 class ArticleCreateView(PressMixin, CreateView):
     form_class = forms.ArticleForm
+
+    def form_valid(self, form):
+        form.instance.press = self.press
+        form.instance.author = self.request.user
+        return super(ArticleCreateView, self).form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        self.realm = self.get_realm()
+        self.press = self.get_press()
+        return super(ArticleCreateView, self).post(request, *args, **kwargs)
