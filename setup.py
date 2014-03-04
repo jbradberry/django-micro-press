@@ -35,5 +35,5 @@ setup(name='django-micro-press',
                    'License :: OSI Approved :: MIT License',
                    'Operating System :: OS Independent',
                    'Programming Language :: Python'],
-      long_description=open('README.txt').read(),
+      long_description=open('README.rst').read(),
       )
