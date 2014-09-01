@@ -89,9 +89,31 @@ class PressMixin(object):
 class ArticleListView(PressMixin, ListView):
     paginate_by = 10
 
+    def get_template_names(self):
+        templates = []
+        if self.template_name is not None:
+            templates.append(self.template_name)
+
+        templates.extend(
+            ['micropress/%s_%s_article_list.html' % (self.realm_type.app_label, self.realm_type.model),
+             'micropress/%s_article_list.html' % (self.realm_type.app_label),
+             'micropress/article_list.html']
+        )
+        return templates
+
 
 class ArticleDetailView(PressMixin, DetailView):
-    pass
+    def get_template_names(self):
+        templates = []
+        if self.template_name is not None:
+            templates.append(self.template_name)
+
+        templates.extend(
+            ['micropress/%s_%s_article_detail.html' % (self.realm_type.app_label, self.realm_type.model),
+             'micropress/%s_article_detail.html' % (self.realm_type.app_label),
+             'micropress/article_detail.html']
+        )
+        return templates
 
 
 class ArticleCreateView(PressMixin, CreateView):
@@ -110,3 +132,15 @@ class ArticleCreateView(PressMixin, CreateView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(ArticleCreateView, self).dispatch(*args, **kwargs)
+
+    def get_template_names(self):
+        templates = []
+        if self.template_name is not None:
+            templates.append(self.template_name)
+
+        templates.extend(
+            ['micropress/%s_%s_article_form.html' % (self.realm_type.app_label, self.realm_type.model),
+             'micropress/%s_article_form.html' % (self.realm_type.app_label),
+             'micropress/article_form.html']
+        )
+        return templates
