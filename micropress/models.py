@@ -3,6 +3,7 @@ from django.contrib.contenttypes import generic
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import models
+from jsonfield import JSONField
 
 from . import markup
 
@@ -49,6 +50,7 @@ class Article(models.Model):
     body_html = models.TextField()
     markup_type = models.CharField(max_length=32, choices=markup.FORMATTERS,
                                    default=markup.DEFAULT_MARKUP)
+    extra_data = JSONField(default={})
 
     class Meta:
         get_latest_by = "created"
