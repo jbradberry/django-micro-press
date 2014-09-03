@@ -116,12 +116,18 @@ class ArticleDetailView(PressMixin, DetailView):
         return templates
 
 
+MICROPRESS_EXTRA_DATA = getattr(settings, 'MICROPRESS_EXTRA_DATA', {})
+
+
 class ArticleCreateView(PressMixin, CreateView):
     form_class = forms.ArticleForm
 
     def form_valid(self, form):
         form.instance.press = self.press
         form.instance.author = self.request.user
+
+        form.instance.extra_data = self.capture_extra_data()
+
         return super(ArticleCreateView, self).form_valid(form)
 
     def post(self, request, *args, **kwargs):
@@ -144,3 +150,23 @@ class ArticleCreateView(PressMixin, CreateView):
              'micropress/article_form.html']
         )
         return templates
+
+    def capture_extra_data(self):
+        extras = MICROPRESS_EXTRA_DATA.get(
+            '%s.%s' % (self.press.content_type.app_label,
+                       self.press.content_type.model),
+            {}
+        )
+
+        data = {}
+        for name, attr in extras.iteritems():
+            if callable(attr):
+                data[name] = attr(self.press.realm, self.request)
+            else:
+                attr_list = attr.split('.')[1:]
+                item = self.press.realm
+                for a in attr_list:
+                    item = getattr(item, a, None)
+                data[name] = item
+
+        return data
