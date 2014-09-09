@@ -10,7 +10,7 @@ class ArticleForm(forms.ModelForm):
 
     class Meta:
         model = models.Article
-        fields = ('title', 'byline', 'section', 'body', 'markup_type')
+        fields = ('title', 'byline', 'section', 'body')
 
 
 class CreatePressForm(forms.ModelForm):
