@@ -1,23 +1,14 @@
-<div class="row">
-  <div class="col-md-8">
-    <a name="{{ article.slug }}"></a>
-    <p class="lead">
-    {% if links %}
-    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-    {% else %}
-    {{ article.title }}
-    {% endif %}
-    </p>
+<article>
+  <header>
+    <p class="label label-danger">{{ article.section }}</p>
+    <h1>
+      <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+    </h1>
+    <p class="byline">by {{ article.byline }}</p>
+    <time datetime="{{ article.created.isoformat }}">{{ article.created }}</time>
+  </header>
+
+  <div class="article-body">
+    {{ article.body_html|safe }}
   </div>
-
-  <div class="col-md-4 text-right">{{ article.section }}</div>
-</div>
-
-<div class="row">
-  <div class="col-md-8">{{ article.byline }}</div>
-  <div class="col-md-4 text-right">{{ article.created }}</div>
-</div>
-
-<div>
-  {{ article.body_html|safe }}
-</div>
+</article>

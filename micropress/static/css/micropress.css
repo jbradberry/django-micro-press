@@ -1,0 +1,6 @@
+article { margin-bottom: 20px; }
+article header { margin-bottom: 20px; }
+article header h1 { margin: 5px 0 10px; font-size: 30px; }
+article header p.byline { margin-bottom: 5px; line-height: 1.4;
+			  font-size: 16px; font-weight: 200; }
+article blockquote p { font-size: 100%; }
