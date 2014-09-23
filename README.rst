@@ -11,3 +11,4 @@ Requirements
 - Django >= 1.4
 - template-utils (`https://bitbucket.org/ubernostrum/django-template-utils`)
 - lxml
+- jsonfield
