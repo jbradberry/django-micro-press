@@ -16,4 +16,4 @@ class ArticleForm(forms.ModelForm):
 class CreatePressForm(forms.ModelForm):
     class Meta:
         model = models.Press
-        exclude = ('content_type', 'object_id', 'realm')
+        fields = ('name', 'closed')
