@@ -1,31 +1,14 @@
+{% extends "base.html" %}
+
 {% load static %}
 {% get_static_prefix as STATIC_URL %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>{% block title %}{{ press.name }}{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" />
+
+{% block title %}{{ press.name }}{% endblock %}
+
+{% block extra_head %}
     <link rel="stylesheet" href="{{ STATIC_URL }}css/micropress.css" />
-    {% block extra_head %}{% endblock %}
-  </head>
+{% endblock %}
 
-  <body>
-    <div class="container">
-      <div class="page-header">
-      {% block header %}
-      <h1>{{ press.name }}</h1>
-      {% endblock %}
-      </div>
-
-    {% block content %}
-    {% endblock %}
-    </div>
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery.min.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
-  </body>
-</html>
+{% block header %}
+<h1>{{ press.name }}</h1>
+{% endblock %}
