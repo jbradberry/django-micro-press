@@ -86,7 +86,7 @@ class PressMixin(object):
         return super(PressMixin, self).get(request, *args, **kwargs)
 
 
-class ArticleListView(ListView, PressMixin):
+class ArticleListView(PressMixin, ListView):
     paginate_by = 10
 
     def get_template_names(self):
@@ -102,7 +102,7 @@ class ArticleListView(ListView, PressMixin):
         return templates
 
 
-class ArticleDetailView(DetailView, PressMixin):
+class ArticleDetailView(PressMixin, DetailView):
     def get_template_names(self):
         templates = []
         if self.template_name is not None:
@@ -119,7 +119,7 @@ class ArticleDetailView(DetailView, PressMixin):
 MICROPRESS_EXTRA_DATA = getattr(settings, 'MICROPRESS_EXTRA_DATA', {})
 
 
-class ArticleCreateView(CreateView, PressMixin):
+class ArticleCreateView(PressMixin, CreateView):
     form_class = forms.ArticleForm
 
     def form_valid(self, form):

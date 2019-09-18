@@ -4,7 +4,8 @@ from django.test import Client, TestCase
 
 from ..models import Press, Section, Article
 
-from sample_project.sample_app.models import TestRealm
+from sample_project.app_one.models import OneGame
+from sample_project.app_two.models import TwoGame
 
 
 class ArticleListViewTestCase(TestCase):
@@ -12,7 +13,7 @@ class ArticleListViewTestCase(TestCase):
         self.client = Client()
 
     def test_basic(self):
-        realm = TestRealm.objects.create(slug='test')
+        realm = OneGame.objects.create(slug='test')
         author = User.objects.create_user('bob', 'bob@example.com', 'password')
 
         press = Press.objects.create(
@@ -31,8 +32,8 @@ class ArticleListViewTestCase(TestCase):
 
         try:
             url = reverse(
-                'article_list',
-                kwargs={'realm_content_type': 'sample_app.testrealm', 'realm_slug': 'test'}
+                'app_one:article_list',
+                kwargs={'realm_slug': 'test'}
             )
         except Exception as e:
             self.fail(e)
@@ -43,7 +44,7 @@ class ArticleListViewTestCase(TestCase):
 
 class ArticleDetailViewTestCase(TestCase):
     def test_basic(self):
-        realm = TestRealm.objects.create(slug='test')
+        realm = OneGame.objects.create(slug='test')
         author = User.objects.create_user('bob', 'bob@example.com', 'password')
 
         press = Press.objects.create(
@@ -62,8 +63,8 @@ class ArticleDetailViewTestCase(TestCase):
 
         try:
             url = reverse(
-                'article_detail',
-                kwargs={'realm_content_type': 'sample_app.testrealm', 'realm_slug': 'test', 'slug': 'hello-world'}
+                'app_one:article_detail',
+                kwargs={'realm_slug': 'test', 'slug': 'hello-world'}
             )
         except Exception as e:
             self.fail(e)
@@ -74,7 +75,7 @@ class ArticleDetailViewTestCase(TestCase):
 
 class ArticleCreateViewTestCase(TestCase):
     def test_basic(self):
-        realm = TestRealm.objects.create(slug='test')
+        realm = OneGame.objects.create(slug='test')
         author = User.objects.create_user('bob', 'bob@example.com', 'password')
 
         press = Press.objects.create(
@@ -85,13 +86,15 @@ class ArticleCreateViewTestCase(TestCase):
 
         try:
             url = reverse(
-                'article_create',
-                kwargs={'realm_content_type': 'sample_app.testrealm', 'realm_slug': 'test'}
+                'app_one:article_create',
+                kwargs={'realm_slug': 'test'}
             )
         except Exception as e:
             self.fail(e)
 
-        data = {}
+        data = {'foo': 'bar'}
         self.assertTrue(self.client.login(username=author.username, password='password'))
-        response = self.client.post(url, data)
+        # import pdb; pdb.set_trace()
+        response = self.client.post(url, data=data)
+        # self.fail(response)
         self.assertEqual(response.status_code, 200)
