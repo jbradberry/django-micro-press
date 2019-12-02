@@ -1,7 +1,7 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^one/', include('sample_project.app_one.urls')),
     url(r'^one/(?P<realm_slug>[\w-]+)/news/',
         include('micropress.urls', namespace='app_one'),
@@ -13,4 +13,4 @@ urlpatterns = patterns('',
     url(r'^two/also/(?P<realm_slug>[\w-]+)/news/',
         include('micropress.urls', namespace='app_two_also'),
         {'realm_content_type': 'app_two.twogamealso'}),
-)
+]
