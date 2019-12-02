@@ -80,6 +80,6 @@ class Article(models.Model):
     def get_absolute_url(self):
         opts = {'slug': self.slug}
         opts.update((key, getattr(self.press.realm, attr))
-                    for key, attr in MICROPRESS_REALM_ARGS.iteritems())
+                    for key, attr in MICROPRESS_REALM_ARGS.items())
         return reverse('micropress:article_detail', kwargs=opts,
                        current_app=self.press.content_type.app_label)

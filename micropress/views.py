@@ -159,7 +159,7 @@ class ArticleCreateView(PressMixin, CreateView):
         )
 
         data = {}
-        for name, attr in extras.iteritems():
+        for name, attr in extras.items():
             if callable(attr):
                 data[name] = attr(self.press.realm, self.request)
             else:
