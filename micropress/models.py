@@ -1,8 +1,9 @@
-from django.template.defaultfilters import slugify
-from django.contrib.contenttypes import fields
-from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.contrib.contenttypes import fields
 from django.db import models
+from django.template.defaultfilters import slugify
+from django.urls import reverse
+
 from jsonfield import JSONField
 
 from . import markup

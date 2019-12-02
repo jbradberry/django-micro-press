@@ -1,11 +1,10 @@
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 
 from ..models import Press, Section, Article
 
 from sample_project.app_one.models import OneGame
-from sample_project.app_two.models import TwoGame
 
 
 class ArticleListViewTestCase(TestCase):
@@ -21,7 +20,7 @@ class ArticleListViewTestCase(TestCase):
             realm=realm,
         )
         section = Section.objects.create(name='Hometown')
-        article = Article.objects.create(
+        Article.objects.create(
             press=press,
             author=author,
             section=section,
@@ -52,7 +51,7 @@ class ArticleDetailViewTestCase(TestCase):
             realm=realm,
         )
         section = Section.objects.create(name='Hometown')
-        article = Article.objects.create(
+        Article.objects.create(
             press=press,
             author=author,
             section=section,
@@ -78,11 +77,11 @@ class ArticleCreateViewTestCase(TestCase):
         realm = OneGame.objects.create(slug='test')
         author = User.objects.create_user('bob', 'bob@example.com', 'password')
 
-        press = Press.objects.create(
+        Press.objects.create(
             name="The Ulfland Gazette",
             realm=realm,
         )
-        section = Section.objects.create(name='Hometown')
+        Section.objects.create(name='Hometown')
 
         try:
             url = reverse(

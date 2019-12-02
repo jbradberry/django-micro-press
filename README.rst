@@ -7,8 +7,8 @@ simple newspaper in a game or other resource on a website.
 
 Requirements
 ------------
-- Python 2.7, 3.5
-- Django >= 1.7, < 1.10
+- Python 2.7, 3.5+
+- Django >= 1.10, < 2
 - template-utils (`https://bitbucket.org/ubernostrum/django-template-utils`)
 - lxml
 - jsonfield
