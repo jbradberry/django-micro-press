@@ -17,7 +17,7 @@ class Press(models.Model):
     name = models.CharField(max_length=128)
     closed = models.BooleanField(default=False)
 
-    content_type = models.ForeignKey("contenttypes.ContentType")
+    content_type = models.ForeignKey("contenttypes.ContentType", on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     realm = fields.GenericForeignKey()
 
@@ -36,13 +36,13 @@ class Section(models.Model):
 
 
 class Article(models.Model):
-    press = models.ForeignKey(Press)
+    press = models.ForeignKey(Press, on_delete=models.CASCADE)
 
-    author = models.ForeignKey("auth.User")
+    author = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     title = models.CharField(max_length=128)
     slug = models.SlugField(max_length=128)
     byline = models.CharField(max_length=128)
-    section = models.ForeignKey(Section)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)

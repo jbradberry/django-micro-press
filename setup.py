@@ -7,7 +7,7 @@ with open("README.rst") as f:
 
 setuptools.setup(
     name='django-micro-press',
-    version="0.1.0dev",
+    version="0.2.0",
     author='Jeff Bradberry',
     author_email='jeff.bradberry@gmail.com',
     description='A pluggable app to embed a simple newpaper',

@@ -4,6 +4,7 @@ from django.conf.urls import url
 from . import views
 
 
+app_name = 'micropress'
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url='article/', permanent=False)),
     url(r'^article/$', views.ArticleListView.as_view(),
