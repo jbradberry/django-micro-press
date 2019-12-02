@@ -1,5 +1,5 @@
 from django.template.defaultfilters import slugify
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes import fields
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import models
@@ -18,7 +18,7 @@ class Press(models.Model):
 
     content_type = models.ForeignKey("contenttypes.ContentType")
     object_id = models.PositiveIntegerField()
-    realm = generic.GenericForeignKey()
+    realm = fields.GenericForeignKey()
 
     class Meta:
         verbose_name_plural = "presses"
