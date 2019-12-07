@@ -30,7 +30,7 @@ class PressMixin(object):
             model = model.lower()
             self.realm_type = ContentType.objects.get(app_label=app_label,
                                                       model=model)
-        except (ObjectDoesNotExist, ValueError) as e:
+        except (ObjectDoesNotExist, ValueError):
             raise ImproperlyConfigured(
                 "{0} is missing a valid realm_content_type.".format(
                     self.__class__.__name__))
@@ -159,7 +159,7 @@ class ArticleCreateView(PressMixin, CreateView):
         )
 
         data = {}
-        for name, attr in extras.iteritems():
+        for name, attr in extras.items():
             if callable(attr):
                 data[name] = attr(self.press.realm, self.request)
             else:

@@ -1,6 +1,16 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
-urlpatterns = patterns('',
-    url(r'^', include('micropress.urls')),
-    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
-)
+
+urlpatterns = [
+    url(r'^one/', include('sample_project.app_one.urls')),
+    url(r'^one/(?P<realm_slug>[\w-]+)/news/',
+        include('micropress.urls', namespace='app_one'),
+        {'realm_content_type': 'app_one.onegame'}),
+    url(r'^two/', include('sample_project.app_one.urls')),
+    url(r'^two/games/(?P<realm_slug>[\w-]+)/news/',
+        include('micropress.urls', namespace='app_two'),
+        {'realm_content_type': 'app_two.twogame'}),
+    url(r'^two/also/(?P<realm_slug>[\w-]+)/news/',
+        include('micropress.urls', namespace='app_two_also'),
+        {'realm_content_type': 'app_two.twogamealso'}),
+]

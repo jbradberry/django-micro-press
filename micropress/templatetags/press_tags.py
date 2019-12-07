@@ -6,7 +6,7 @@ from ..models import Press
 register = template.Library()
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_press(context, realm):
     ct = ContentType.objects.get_for_model(realm)
     qs = Press.objects.filter(content_type=ct, object_id=realm.pk)

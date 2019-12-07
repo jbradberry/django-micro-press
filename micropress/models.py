@@ -1,8 +1,9 @@
-from django.template.defaultfilters import slugify
-from django.contrib.contenttypes import generic
-from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.contrib.contenttypes import fields
 from django.db import models
+from django.template.defaultfilters import slugify
+from django.urls import reverse
+
 from jsonfield import JSONField
 
 from . import markup
@@ -16,9 +17,9 @@ class Press(models.Model):
     name = models.CharField(max_length=128)
     closed = models.BooleanField(default=False)
 
-    content_type = models.ForeignKey("contenttypes.ContentType")
+    content_type = models.ForeignKey("contenttypes.ContentType", on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    realm = generic.GenericForeignKey()
+    realm = fields.GenericForeignKey()
 
     class Meta:
         verbose_name_plural = "presses"
@@ -35,13 +36,13 @@ class Section(models.Model):
 
 
 class Article(models.Model):
-    press = models.ForeignKey(Press)
+    press = models.ForeignKey(Press, on_delete=models.CASCADE)
 
-    author = models.ForeignKey("auth.User")
+    author = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     title = models.CharField(max_length=128)
     slug = models.SlugField(max_length=128)
     byline = models.CharField(max_length=128)
-    section = models.ForeignKey(Section)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -80,6 +81,6 @@ class Article(models.Model):
     def get_absolute_url(self):
         opts = {'slug': self.slug}
         opts.update((key, getattr(self.press.realm, attr))
-                    for key, attr in MICROPRESS_REALM_ARGS.iteritems())
+                    for key, attr in MICROPRESS_REALM_ARGS.items())
         return reverse('micropress:article_detail', kwargs=opts,
                        current_app=self.press.content_type.app_label)

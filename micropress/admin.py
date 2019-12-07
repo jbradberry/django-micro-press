@@ -1,4 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
 from django.forms import ModelChoiceField
 from django.contrib import admin
 

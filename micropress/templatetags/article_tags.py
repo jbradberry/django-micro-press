@@ -9,7 +9,7 @@ def article_content(parser, token):
     bits = token.split_contents()
     tagname = bits.pop(0)
     if len(bits) > 1:
-        raise template.TemplateSyntaxError, "%r tag requires a single argument" % tagname
+        raise template.TemplateSyntaxError("%r tag requires a single argument", tagname)
     if bits and bits[0] == 'links':
         return ArticleNode(True)
     return ArticleNode()
