@@ -2,6 +2,8 @@
 *~
 *.pyc
 .tox
+__pycache__
 *.egg-info
 MANIFEST
 *.db3
+*.sqlite3
