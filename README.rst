@@ -50,16 +50,16 @@ django-micro-press is intended to provide urls that attach to the url
 scheme of your app or apps.  One way to do this is,
 ::
 
-   from django.conf.urls import include, url
+   from django.urls import include, re_path
 
    urlpatterns = [
-       url(r'^admin/', include('admin.site.urls')),
-       url(r'^accounts/', include('django.contrib.auth.urls'),
+       re_path(r'^admin/', include('admin.site.urls')),
+       re_path(r'^accounts/', include('django.contrib.auth.urls'),
 
-       url(r'^my-game-app/', include('my_game_app.urls')),
-       url(r'^my-game-app/(?P<realm_slug>[\w-]+)/news/',
-           include('micropress.urls', namespace='my_game_app'),
-           {'realm_content_type': 'my_game_app.game'}),
+       re_path(r'^my-game-app/', include('my_game_app.urls')),
+       re_path(r'^my-game-app/(?P<realm_slug>[\w-]+)/news/',
+               include('micropress.urls', namespace='my_game_app'),
+               {'realm_content_type': 'my_game_app.game'}),
    ]
 
 
