@@ -67,7 +67,7 @@ class PressMixin:
         return press
 
     def get_queryset(self):
-        queryset = super(PressMixin, self).get_queryset()
+        queryset = super().get_queryset()
 
         if self.press:
             return queryset.filter(press=self.press)
@@ -78,12 +78,12 @@ class PressMixin:
                    'realm': self.realm,
                    'current_app': self.press.content_type.app_label}
         context.update(kwargs)
-        return super(PressMixin, self).get_context_data(**context)
+        return super().get_context_data(**context)
 
     def get(self, request, *args, **kwargs):
         self.realm = self.get_realm()
         self.press = self.get_press()
-        return super(PressMixin, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
 
 class ArticleListView(PressMixin, ListView):
@@ -128,16 +128,16 @@ class ArticleCreateView(PressMixin, CreateView):
 
         form.instance.extra_data = self.capture_extra_data()
 
-        return super(ArticleCreateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
         self.realm = self.get_realm()
         self.press = self.get_press()
-        return super(ArticleCreateView, self).post(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        return super(ArticleCreateView, self).dispatch(*args, **kwargs)
+        return super().dispatch(*args, **kwargs)
 
     def get_template_names(self):
         templates = []

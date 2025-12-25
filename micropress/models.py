@@ -74,7 +74,7 @@ class Article(models.Model):
                 slug = slug[:max_length - len(end)]
 
         self.slug = slug + end
-        super(Article, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         opts = {'slug': self.slug}

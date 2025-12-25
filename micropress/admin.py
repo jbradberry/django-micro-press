@@ -15,7 +15,7 @@ class PressAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'content_type':
             kwargs['form_class'] = GenericModelChoiceField
-        return super(PressAdmin, self).formfield_for_foreignkey(
+        return super().formfield_for_foreignkey(
             db_field, request, **kwargs)
 
 
