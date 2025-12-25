@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 
 {% load static %}
-{% get_static_prefix as STATIC_URL %}
 
 {% block title %}{{ press.name }}{% endblock %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/micropress.css" />
+    <link rel="stylesheet" href="{% static 'css/micropress.css' %}" />
 {% endblock %}
 
 {% block header %}
