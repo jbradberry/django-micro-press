@@ -23,6 +23,9 @@ class Press(models.Model):
 
     class Meta:
         verbose_name_plural = "presses"
+        constraints = [
+            models.UniqueConstraint(fields=('content_type', 'object_id'), name='press_unique_generic_fk'),
+        ]
 
     def __str__(self):
         return self.name
@@ -54,7 +57,9 @@ class Article(models.Model):
     class Meta:
         get_latest_by = "created"
         ordering = ("-created", "title")
-        unique_together = ("press", "slug")
+        constraints = [
+            models.UniqueConstraint(fields=('press', 'slug'), name='article_slug_per_press'),
+        ]
 
     def __str__(self):
         return self.title
