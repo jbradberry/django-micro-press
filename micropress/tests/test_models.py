@@ -59,4 +59,4 @@ class ArticleTestCase(TestCase):
         self.assertEqual(press.article_set.count(), 1)
         article = press.article_set.get()
         self.assertEqual(article.slug, 'hello-world')
-        self.assertEqual(article.body_html, '<p>Hello.</p>\n')
+        self.assertEqual(article.body_html, '<p>Hello.</p>')

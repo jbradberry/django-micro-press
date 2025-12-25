@@ -49,8 +49,6 @@ class Article(models.Model):
 
     body = models.TextField()
     body_html = models.TextField()
-    markup_type = models.CharField(max_length=32, choices=markup.FORMATTERS,
-                                   default=markup.DEFAULT_MARKUP)
     extra_data = JSONField(default={})
 
     class Meta:
@@ -62,7 +60,7 @@ class Article(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.body_html = markup.process(self.body, self.markup_type)
+        self.body_html = markup.process(self.body)
 
         max_length = self._meta.get_field('slug').max_length
         slug, num, end = slugify(self.title), 1, ''
