@@ -24,14 +24,14 @@ class Press(models.Model):
     class Meta:
         verbose_name_plural = "presses"
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
 class Section(models.Model):
     name = models.CharField(max_length=32)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -58,7 +58,7 @@ class Article(models.Model):
         ordering = ("-created", "title")
         unique_together = ("press", "slug")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):

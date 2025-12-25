@@ -6,7 +6,7 @@ from . import models
 
 class GenericModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return u"{0}.{1}".format(obj.app_label, obj.model)
+        return "{0}.{1}".format(obj.app_label, obj.model)
 
 
 class PressAdmin(admin.ModelAdmin):

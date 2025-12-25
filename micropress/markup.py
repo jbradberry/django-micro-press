@@ -14,4 +14,4 @@ def process(html, filter_name):
                      **MARKUP_FILTER_OPTS.get(filter_name, {}))
     if html:
         return clean_html(html, **LXML_CLEAN_OPTS)
-    return u''
+    return ''
