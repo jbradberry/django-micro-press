@@ -52,7 +52,7 @@ class Article(models.Model):
 
     body = models.TextField()
     body_html = models.TextField()
-    extra_data = JSONField(default={})
+    extra_data = models.JSONField(default=dict)
 
     class Meta:
         get_latest_by = "created"
