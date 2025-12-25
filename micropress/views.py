@@ -31,9 +31,7 @@ class PressMixin:
             self.realm_type = ContentType.objects.get(app_label=app_label,
                                                       model=model)
         except (ObjectDoesNotExist, ValueError):
-            raise ImproperlyConfigured(
-                "{0} is missing a valid realm_content_type.".format(
-                    self.__class__.__name__))
+            raise ImproperlyConfigured(f"{self.__class__.__name__} is missing a valid realm_content_type.")
 
         realm_pk = self.kwargs.get(self.pk_realm_kwarg)
         realm_slug = self.kwargs.get(self.slug_realm_kwarg)
@@ -49,8 +47,7 @@ class PressMixin:
             try:
                 realm = self.realm_type.get_object_for_this_type(**opts)
             except ObjectDoesNotExist:
-                raise Http404("No %s found matching this query."
-                              % self.realm_type.__class__.__name__)
+                raise Http404(f"No {self.realm_type.__class__.__name__} found matching this query.")
 
         return realm
 
@@ -95,8 +92,8 @@ class ArticleListView(PressMixin, ListView):
             templates.append(self.template_name)
 
         templates.extend(
-            ['micropress/%s_%s_article_list.html' % (self.realm_type.app_label, self.realm_type.model),
-             'micropress/%s_article_list.html' % (self.realm_type.app_label),
+            [f'micropress/{self.realm_type.app_label}_{self.realm_type.model}_article_list.html',
+             f'micropress/{self.realm_type.app_label}_article_list.html',
              'micropress/article_list.html']
         )
         return templates
@@ -109,8 +106,8 @@ class ArticleDetailView(PressMixin, DetailView):
             templates.append(self.template_name)
 
         templates.extend(
-            ['micropress/%s_%s_article_detail.html' % (self.realm_type.app_label, self.realm_type.model),
-             'micropress/%s_article_detail.html' % (self.realm_type.app_label),
+            [f'micropress/{self.realm_type.app_label}_{self.realm_type.model}_article_detail.html',
+             f'micropress/{self.realm_type.app_label}_article_detail.html',
              'micropress/article_detail.html']
         )
         return templates
@@ -145,18 +142,14 @@ class ArticleCreateView(PressMixin, CreateView):
             templates.append(self.template_name)
 
         templates.extend(
-            ['micropress/%s_%s_article_form.html' % (self.realm_type.app_label, self.realm_type.model),
-             'micropress/%s_article_form.html' % (self.realm_type.app_label),
+            [f'micropress/{self.realm_type.app_label}_{self.realm_type.model}_article_form.html',
+             f'micropress/{self.realm_type.app_label}_article_form.html',
              'micropress/article_form.html']
         )
         return templates
 
     def capture_extra_data(self):
-        extras = MICROPRESS_EXTRA_DATA.get(
-            '%s.%s' % (self.press.content_type.app_label,
-                       self.press.content_type.model),
-            {}
-        )
+        extras = MICROPRESS_EXTRA_DATA.get(f'{self.press.content_type.app_label}.{self.press.content_type.model}', {})
 
         data = {}
         for name, attr in extras.items():

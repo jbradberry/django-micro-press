@@ -69,7 +69,7 @@ class Article(models.Model):
 
         while self.press.article_set.filter(slug=slug+end).exists():
             num += 1
-            end = "-{0}".format(num)
+            end = f"-{num}"
             if len(slug) + len(end) > max_length:
                 slug = slug[:max_length - len(end)]
 

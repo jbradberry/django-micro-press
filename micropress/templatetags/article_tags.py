@@ -32,7 +32,5 @@ class ArticleNode(template.Node):
         app_name = realm._meta.app_label
         context['links'] = self.links
 
-        template_list = ["micropress/{0}article_card.html".format(name)
-                         for name in ("site_{0}_".format(app_name), "site_",
-                                      "{0}_".format(app_name), "")]
+        template_list = [f"micropress/{name}article_card.html" for name in (f"site_{app_name}_", "site_", f"{app_name}_", "")]
         return render_to_string(template_list, context)
