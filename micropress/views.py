@@ -10,7 +10,7 @@ from . import models
 from . import forms
 
 
-class PressMixin(object):
+class PressMixin:
     model = models.Article
 
     realm_slug_field = 'slug'
