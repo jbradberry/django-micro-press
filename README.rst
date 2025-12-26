@@ -8,9 +8,10 @@ simple newspaper in a game or other resource on a website.
 
 Requirements
 ------------
-- Python 2.7, 3.5+
-- Django >= 1.10, < 2.3
-- jsonfield
+- Python 3.10+
+- Django 5.0, 5.1, 5.2
+- Markdown
+- nh3
 
 
 Installation
