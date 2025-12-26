@@ -3,7 +3,6 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import jsonfield.fields
 
 
 class Migration(migrations.Migration):
@@ -28,7 +27,7 @@ class Migration(migrations.Migration):
                 ('body', models.TextField()),
                 ('body_html', models.TextField()),
                 ('markup_type', models.CharField(choices=[('textile', 'textile'), ('markdown', 'markdown'), ('restructuredtext', 'restructuredtext')], default='restructuredtext', max_length=32)),
-                ('extra_data', jsonfield.fields.JSONField(default={})),
+                ('extra_data', models.JSONField(default=dict)),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={

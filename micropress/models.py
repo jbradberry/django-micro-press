@@ -4,8 +4,6 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 
-from jsonfield import JSONField
-
 from . import markup
 
 
