@@ -1,0 +1,31 @@
+[project]
+name = "django-micro-press"
+version = "0.2.0"
+requires-python = ">= 3.10"
+authors = [
+  {name = "Jeff Bradberry", email = "jeff.bradberry@gmail.com"},
+]
+description = "A pluggable app to embed a simple newpaper"
+readme = "README.rst"
+license = "MIT"
+dependencies = [
+  "django>=5.0",
+  "Markdown",
+  "nh3",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["micropress"]

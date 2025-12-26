@@ -7,3 +7,6 @@ __pycache__
 MANIFEST
 *.db3
 *.sqlite3
+**/build
+**/dist
+media

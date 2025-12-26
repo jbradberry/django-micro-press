@@ -1,0 +1,3 @@
+recursive-include micropress/static *
+recursive-include micropress/templates *
+global-exclude *~
